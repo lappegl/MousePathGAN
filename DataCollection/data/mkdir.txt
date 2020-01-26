@@ -1,0 +1,2 @@
+Making sure this directory for data collection exists.
+CSV files created by CollectMouseData.py will go here.
