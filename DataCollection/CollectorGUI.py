@@ -25,7 +25,8 @@ class CollectorGUI:
         self.start_button = Button(master, text='Start Collection', command=self.spawn_random_button)
         self.start_button.pack()
 
-        self.collected = IntVar(value=-1)
+        self.collected = IntVar(value=0)
+        self.num_to_collect = 50
 
         self.counter = Label(master, textvariable=self.collected)
         self.counter.place(x=10, y=10)
@@ -68,9 +69,11 @@ class CollectorGUI:
 
         self.collected.set(value=(self.collected.get() + 1))  # increment counter
         # CLOSE WINDOW AFTER N BUTTONS PRESSED
-        if self.collected.get() == 50:
-            self.master.quit()
-
+        if self.collected.get() > self.num_to_collect:
+            self.clear_buttons()
+            sleep(.5)
+            self.restart()
+            return
         self.last_updated = time()
         self.clear_buttons()  # clear previous button
         n = self.collected.get()
@@ -94,18 +97,27 @@ class CollectorGUI:
         self.current_button = this_button
         # self.button_log[n] = this_button
 
+        # sleep(.1)  # short break before next button appears
         new_button.place(x=x, y=y, height=h, width=w)
-        sleep(.1)  # short break before next button appears
+
+    # when an iteration is complete, spawn a button to restart the collection process
+    def restart(self):
+        w = 20
+        h = 80
+        x = random.randint(w, self.FRAME_WIDTH - w)
+        y = random.randint(w, self.FRAME_HEIGHT - h)
+        self.start_button = Button(self.master, text='Start Collection', command=self.spawn_random_button, bg='blue')
+        self.start_button.place(x=x, y=y)
+        self.collected.set(0)
 
     # collects information on movement events (position and time)
     def track_movement(self, event):
-
         x = event.x_root - self.master.winfo_rootx()
         y = event.y_root - self.master.winfo_rooty()
         # print('({}, {})'.format(x, y), 'button:', self.current_button)
         t = time() - self.last_updated
 
-        if self.collected.get() >= 0:
+        if self.collected.get() > 0:
             self.log_action('MOVE', x, y, t, self.current_button)
 
     # collects information on click events (position and time)
@@ -114,7 +126,7 @@ class CollectorGUI:
         y = event.y_root - self.master.winfo_rooty()
         t = time() - self.START_TIME
 
-        if self.collected.get() >= 0:
+        if self.collected.get() > 0:
             self.log_action('CLICK', x, y, t, self.current_button)
 
     # writes collected event information to the CSV specified in the initialization of the GUI
