@@ -26,10 +26,13 @@ class CollectorGUI:
         self.start_button.pack()
 
         self.collected = IntVar(value=0)
+        self.collected_total = IntVar(value=0)
         self.num_to_collect = 50
 
         self.counter = Label(master, textvariable=self.collected)
         self.counter.place(x=10, y=10)
+        self.counter_total = Label(master, textvariable=self.collected_total)
+        self.counter_total.place(x=10, y=30)
 
         self.current_button = {}
 
@@ -74,6 +77,7 @@ class CollectorGUI:
             sleep(.5)
             self.restart()
             return
+        self.collected_total.set(value=(self.collected_total.get() + 1))  # increment counter
         self.last_updated = time()
         self.clear_buttons()  # clear previous button
         n = self.collected.get()
