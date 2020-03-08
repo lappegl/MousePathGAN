@@ -1,7 +1,9 @@
-# CollectorGUI
-# Author - Garrett Lappe - garrett.l.lappe@gmail.com
-# Defines custom tkinter GUI for collecting mouse movement data
-# Tracks mouse position over time, click position and time, and button location and dimensions for current path.
+"""
+CollectorGUI
+Author - Garrett Lappe - garrett.l.lappe@gmail.com
+Defines custom tkinter GUI for collecting mouse movement data
+Tracks mouse position over time, click position and time, and button location and dimensions for current path.
+"""
 
 from tkinter import Button, Label, IntVar
 from datetime import datetime
@@ -128,7 +130,7 @@ class CollectorGUI:
     def track_click(self, event):
         x = event.x_root - self.master.winfo_rootx()
         y = event.y_root - self.master.winfo_rooty()
-        t = time() - self.START_TIME
+        t = time() - self.last_updated
 
         if self.collected.get() > 0:
             self.log_action('CLICK', x, y, t, self.current_button)
